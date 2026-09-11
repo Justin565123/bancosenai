@@ -7,7 +7,7 @@ namespace BancoSENAIAPI.Controllers
     public class DocumentoController : Controller
     {
         private readonly string _caminhoRaiz = Path.Combine(
-            Directory.GetcurrentDirectory(), 
+            Directory.GetCurrentDirectory(), 
             "ClienteArquivos"
             );
 
@@ -19,9 +19,9 @@ namespace BancoSENAIAPI.Controllers
         [HttpPost("upload/{codigoCliente}")]
         public async Task<IActionResult> AnexarArquivo(int codigoCliente, IFormFile arquivo)
         {
-            if (arquivo == null | | arquivo.Length == 0)
+            if (arquivo == null || arquivo.Length == 0)
             {
-                return BadRequest("Nenhm arquivo foi enviado")
+                return BadRequest("Nenhm arquivo foi enviado");
             }
 
             string pastaCliente = Path.Combine(_caminhoRaiz, codigoCliente.ToString());
@@ -32,7 +32,7 @@ namespace BancoSENAIAPI.Controllers
             }
             string extensao = Path.GetExtension(arquivo.FileName);
             string nameOriginal = Path.GetFileNameWithoutExtension(arquivo.FileName);
-            string novoNome = $"{codigoCliente}_{nomeOriginal}_{Guid.NewGuid()}{extensao}";
+            string novoNome = $"{codigoCliente}_{nameOriginal}_{Guid.NewGuid()}{extensao}";
             string caminhoFinal = Path.Combine(pastaCliente, novoNome);
             
             using (var stream = new FileStream(caminhoFinal, FileMode.Create))
@@ -50,7 +50,7 @@ namespace BancoSENAIAPI.Controllers
 
             _documentosMetadados.Add(documentoMetadados);
 
-            return Ok(new {mensagem = "Documento anexado com sucesso", arquivoSalvo = novoNome})
+            return Ok(new { mensagem = "Documento anexado com sucesso", arquivoSalvo = novoNome });
         }
     }
 }
