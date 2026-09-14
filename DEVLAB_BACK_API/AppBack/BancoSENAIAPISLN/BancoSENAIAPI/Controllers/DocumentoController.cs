@@ -52,5 +52,63 @@ namespace BancoSENAIAPI.Controllers
 
             return Ok(new { mensagem = "Documento anexado com sucesso", arquivoSalvo = novoNome });
         }
+
+        [HttpGet("v1/documento/listar/{codigoCliente}")]
+
+        public IActionResult listagem(int codigoCliente)
+        {
+            var documentos = _documentosMetadados
+                .Where(d => d.CodigoCliente == codigoCliente)
+                .ToList();
+
+            if (!documentos.Any())
+            {
+                return NotFound(new { mensagem = $"Nenhum documento foi encontrado, verifique seu cadastro. {codigoCliente}"});
+            }
+
+            return Ok(documentos);
+        }
+        [HttpGet("v1/docimento/download/{id}")]
+
+        public async Task<IActionResult> Download(int id)
+        {
+            var documento = _documentosMetadados.FirstOrDefault(d => d.Id == id);
+
+            if (documento == null)
+            {
+                return NotFound(new { mensagem = "Documento não encontrado." });
+            }
+
+            if (!System.IO.File.Exists(documento.Caminho))
+            {
+                return NotFound(new { mensagem = "O arquivo físico não foi encontrado no servidor." });
+            }
+
+            byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(documento.Caminho);
+
+            string nomeArquivoCompleto = $"{documento.Name}{documento.Extensao}";
+
+            return File(fileBytes, "application/octet-stream", nomeArquivoCompleto);
+        }
+
+        [HttpDelete("excluir/{id}")]
+        public IActionResult Excluir(int id)
+        {
+            var documento = _documentosMetadados.FirstOrDefault(d => d.Id == id);
+
+            if (documento == null)
+            {
+                return NotFound(new { mensagem = "Documento não encontrado." });
+            }
+
+            if (System.IO.File.Exists(documento.Caminho))
+            {
+                System.IO.File.Delete(documento.Caminho);
+            }
+
+            _documentosMetadados.Remove(documento);
+
+            return Ok(new { mensagem = "Documento e arquivo removidos com sucesso!" });
+        }
     }
 }
