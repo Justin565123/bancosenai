@@ -55,7 +55,7 @@ namespace BancoSENAIAPI.Controllers
 
         [HttpGet("v1/documento/listar/{codigoCliente}")]
 
-        public async Task<IActionResult> listagem(int codigoCliente)
+        public IActionResult listagem(int codigoCliente)
         {
             var documentos = _documentosMetadados
                 .Where(d => d.CodigoCliente == codigoCliente)
@@ -63,7 +63,7 @@ namespace BancoSENAIAPI.Controllers
 
             if (!documentos.Any())
             {
-                return NotFound(new {mensagem = $"Nenhum documento foi encontrado, verifique seu cadastro. {codigoCliente}"});
+                return NotFound(new { mensagem = $"Nenhum documento foi encontrado, verifique seu cadastro. {codigoCliente}"});
             }
 
             return Ok(documentos);
