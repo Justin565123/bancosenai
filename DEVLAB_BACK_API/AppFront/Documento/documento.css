@@ -1,0 +1,24 @@
+body {
+    background-color: snow;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+h1 {
+    color: #003366;
+    text-align: center;
+    font-family: Arial;
+}
+
+.form-container {
+    margin-bottom: 30px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+}
