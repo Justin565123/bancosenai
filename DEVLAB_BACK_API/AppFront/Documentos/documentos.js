@@ -13,7 +13,7 @@ async function enviarDocumento() {
 
     // Upload usa FormData pois a API espera um arquivo (IFormFile), e não JSON
     const dadosArquivo = new FormData();
-    dadosArquivo.append('arquivo', arquivo);
+    dadosArquivo.append('arquivo', arquivo)
 
     const response = await fetch(`${URL_API}/upload/${codigoCliente}`, {
         method: 'POST',
@@ -26,8 +26,7 @@ async function enviarDocumento() {
         document.getElementById('codigoClienteBusca').value = codigoCliente;
         listarDocumentos();
     } else {
-        const erro = await response.json();
-        alert("Erro: " + (erro.message || "Falha ao enviar o documento"));
+        alert("Erro: Falha ao enviar o documento");
     }
 }
 
