@@ -1,0 +1,19 @@
+body { font-family: Arial, sans-serif; padding: 20px; }
+h1 { color: #003366; }
+
+.form-container { margin-bottom: 30px; background: #f9f9f9; padding: 15px; border-radius: 5px; }
+input { padding: 8px; margin-right: 10px; border: 1px solid #ccc; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+th { background-color: #003366; color: white; }
+
+/* Tabela Zebrada */
+tr:nth-child(even) { background-color: #f2f2f2; }
+tr:hover { background-color: #ddd; }
+
+button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 3px; }
+#btnEnviar { background-color: #28a745; color: white; }
+#btnBuscar { background-color: #007bff; color: white; }
+.btn-baixar { background-color: #ffc107; margin-right: 5px; }
+.btn-excluir { background-color: #dc3545; color: white; }

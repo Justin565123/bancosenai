@@ -1,5 +1,7 @@
 ﻿using BancoSENAIAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using BancoSENAIAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BancoSENAIAPI.Controllers
 {
@@ -7,35 +9,36 @@ namespace BancoSENAIAPI.Controllers
     [Route("api/v1/[controller]")]
     public class AgenciaController : ControllerBase
     {
-        private static List<Agencia> _agencias = new List<Agencia>
+        public readonly AppDbContext _context;
+        public AgenciaController(AppDbContext context) 
         {
-            new Agencia { NumeroAgencia = 1001, Cidade = "Aracaju", SiglaEstado = "SE" },
-            new Agencia { NumeroAgencia = 2002, Cidade = "São Paulo", SiglaEstado = "SP" },
-            new Agencia { NumeroAgencia = 3003, Cidade = "Salvador", SiglaEstado = "BA" }
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public IActionResult ListarTodas()
+        public async Task <IActionResult> ListarTodas()
         {
-            return Ok(_agencias);
+            var agencias = await _context.Agencia.ToListAsync();
+            return Ok(agencias);
         }
 
         [HttpPost]
-        public IActionResult Cadastrar([FromBody] Agencia novaAgencia)
+        public async Task <IActionResult> Cadastrar([FromBody] Agencia novaAgencia)
         {
             
-            if (_agencias.Any(a => a.NumeroAgencia == novaAgencia.NumeroAgencia))
+            if (await _context.Agencia.AnyAsync(a => a.NumeroAgencia == novaAgencia.NumeroAgencia))
                 return BadRequest(new { message = "Este número de agência já existe." });
 
-            _agencias.Add(novaAgencia);
+            _context.Agencia.Add(novaAgencia);
+            await _context.SaveChangesAsync();     
             // Retorna Status 201 Created conforme boas práticas REST [6, 8]
             return Created("", novaAgencia);
         }
 
         [HttpGet("{codigo}")]
-        public IActionResult ConsultarPorCodigo(int codigo)
+        public async Task <IActionResult> ConsultarPorCodigo(int codigo)
         {
-            var agencia = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agencia = await _context.Agencia.FirstOrDefaultAsync(a => a.NumeroAgencia == codigo);
 
             if (agencia == null)
                 return NotFound(new { message = "Agência não encontrada." }); // Status 404 [6, 7]
@@ -44,27 +47,31 @@ namespace BancoSENAIAPI.Controllers
         }
 
         [HttpPut("{codigo}")]
-        public IActionResult Alterar(int codigo, [FromBody] Agencia agenciaAtualizada)
+        public async Task <IActionResult> Alterar(int codigo, [FromBody] Agencia agenciaAtualizada)
         {
-            var agenciaExistente = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agenciaExistente = await _context.Agencia.FirstOrDefaultAsync(a => a.NumeroAgencia == codigo);
 
             if (agenciaExistente == null) return NotFound();
 
             agenciaExistente.Cidade = agenciaAtualizada.Cidade;
             agenciaExistente.SiglaEstado = agenciaAtualizada.SiglaEstado;
 
+            await _context.SaveChangesAsync();
+
             // Retorna Status 204 No Content para atualizações bem-sucedidas [6, 9]
             return NoContent();
         }
 
         [HttpDelete("{codigo}")]
-        public IActionResult Excluir(int codigo)
+        public async Task <IActionResult> Excluir(int codigo)
         {
-            var agencia = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agencia = await _context.Agencia.FirstOrDefaultAsync(a => a.NumeroAgencia == codigo);
 
             if (agencia == null) return NotFound();
 
-            _agencias.Remove(agencia);
+            _context.Agencia.Remove(agencia);
+            await _context.SaveChangesAsync();
+
             return Ok(new { message = "Agência excluída com sucesso." }); // Status 200 [6]
         }
     }

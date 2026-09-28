@@ -1,10 +1,15 @@
-﻿namespace BancoSENAIAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BancoSENAIAPI.Models
 {
     public class Agencia
     {
-        public int NumeroAgencia { get; set; } 
-        public string Cidade { get; set; }
-        public string SiglaEstado { get; set; }
+        [Key]
+        public int NumeroAgencia { get; set; }
+        [Required]
+        public string? Cidade { get; set; }
+        [Required]
+        public string? SiglaEstado { get; set; }
 
     }
 }
