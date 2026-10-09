@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using BancoSENAIAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BancoSENAIAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class AgenciaController : ControllerBase
